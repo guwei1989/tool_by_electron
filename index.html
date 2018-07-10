@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>艾润物联©</title>
+    <link rel="stylesheet" type="text/css" href="./bootstrap-3.3.7/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="./css/my_design.css">
+
+    <script>
+        delete module.exports
+    </script>
+    <script type="text/javascript" src="./js/jquery-3.3.1.min.js"></Script>
+    <script type="text/javascript" src="./bootstrap-3.3.7/dist/js/bootstrap.min.js"></Script>
+    <script type="text/javascript" src="./js/bootstrap-datetimepicker.min.js"></Script>
+    <script type="text/javascript" src="./js/bootbox.min.js"></Script>
+    <script type="text/javascript" src="./js/echarts.common.min.js"></Script>
+    <Script type="text/javascript" src="./utils.js"></Script>
+    <script type="text/javascript" src="./system_status.js"></Script>
+    <script type="text/javascript" src="./inside_export.js"></Script>
+    <script type="text/javascript" src="./db_dump_reset.js"></Script>
+    <script type="text/javascript" src="./auth_bug_repair.js"></Script>
+    <script type="text/javascript" src="./abnormal_num_modify_njgl.js"></Script>
+</head>
+
+<body class="container-fluid">
+
+    <!--公用进度条-->
+    <div class="modal fade" id="loadingModal" backdrop='static'>
+        <div style="width: 200px;height:20px; z-index: 20000; position: absolute; text-align: center; left: 50%; top: 50%;margin-left:-100px;margin-top:-10px">
+            <div class="progress progress-striped active" id="progress_bar" style="margin-bottom: 0;">
+                <div class="progress-bar" style="width: 100%;"></div>
+            </div>
+            <h3 id="load_content">
+                <b>正在加载,请稍等......</b>
+            </h3>
+        </div>
+    </div>
+    <!--公用进度条-->
+
+    <!--场内记录导出的模态窗-->
+    <div class="modal fade" id="export_inside_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">场内记录导出</h4>
+                </div>
+                <div class="modal-body row">
+                    <div class="">
+                        <div class="col-md-6">
+                            <label>数据库板子 IP：</label>
+                            <input type="text" id="db_ip" style="width:150px;" value="192.168.55.248" placeholder="输入数据库板子的ARM IP" />
+                        </div>
+                        <div class="col-md-6">
+                            <label style="margin-left:30px;">数据库端口号：</label>
+                            <input type="text" id="db_port" style="width:65px;" value="3306" placeholder="端口号" />
+                        </div>
+                    </div>
+                    <div style="margin-top:50px;">
+                        <div class="col-md-6">
+                            <label>截止日期：</label>
+                            <input type="text" style="width:150px;margin-left:32px;" value="2018-01-01 00:00:00" id="datetimepicker" data-date-format="yyyy-mm-dd hh:ii:ss">
+                        </div>
+                        <div class="col-md-6">
+                            <label style="margin-left:30px;">ARM端口号：</label>
+                            <input type="text" id="db_arm_port" style="width:65px;margin-left:11px;" value="22" placeholder="端口号" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-default" id="export_btn" style="width:70px;margin-left:30px;">
+                        <span class="glyphicon glyphicon-save-file"></span> 导出
+                    </button>
+                    <button class="btn btn-default" id="delete_btn" style="width:70px;margin-left:30px;">
+                        <span class="glyphicon glyphicon-trash"></span> 删除
+                    </button>
+                    <div style="text-align: center; width: 500px; border:none;">
+                        <img src="./pic/loading.gif" id="loading_gif_export" class="loading_img" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--场内记录导出的模态窗-->
+
+    <!--数据库备份与还原的模态窗-->
+    <div class="modal fade" id="db_dumps_reset" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">数据库备份与还原</h4>
+                </div>
+                <div class="modal-body row">
+                    <div style="">
+                        <div class="col-md-6">
+                            <label for="name">请选择车场版本：</label>
+                            <select class="" id="version_type">
+                                <option>V2车场</option>
+                                <option>V3车场</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="margin-top:50px;">
+                        <div class="col-md-6">
+                            <label>ARM板子 IP：</label>
+                            <input type="text" id="arm_ip_dump" style="width:150px;" value="192.168.55.248" placeholder="输入ARM板子的IP" />
+                        </div>
+                        <div class="col-md-6">
+                            <label style="margin-left:30px;">板子端口号：</label>
+                            <input type="text" id="arm_port_dump" style="width:65px;" value="22" placeholder="端口号" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-default" id="db_copy_btn" style="width:70px;margin-left:30px;">
+                        <span class="glyphicon glyphicon-folder-open"></span> 备份
+                    </button>
+                    <button class="btn btn-default" id="db_reset_btn" style="width:70px;margin-left:30px;">
+                        <span class="glyphicon glyphicon-repeat"></span> 还原
+                    </button>
+                    <div style="text-align: center; width: 500px; border:none;">
+                        <img src="./pic/loading.gif" id="loading_gif_dump" class="loading_img" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--数据库备份与还原的模态窗-->
+
+    <!--授权期限BUG的模态窗-->
+    <div class="modal fade" id="auth_time_bug" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">授权期限BUG修复
+                        <font color="red" size="3">(警告：此功能仅用于339X之前版本升级到339X版本)</font>
+                    </h4>
+                </div>
+                <div class="modal-body row">
+                    <div class="">
+                        <div class="col-md-6">
+                            <label>数据库板子 IP：</label>
+                            <input type="text" id="db_ip_auth_bug" style="width:150px;" value="192.168.55.248" placeholder="输入数据库板子的ARM IP" />
+                        </div>
+                        <div class="col-md-6">
+                            <label style="margin-left:30px;">数据库板子端口号：</label>
+                            <input type="text" id="db_arm_port_auth_bug" style="width:65px;" value="22" placeholder="端口号" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-default" id="modify_btn_auth_bug" style="width:95px;margin-left:30px;" data-toggle="tooltip" data-placement="left"
+                        title="此功能会将界面显示授权到期日减少一天，实际授权日不变（收入不受影响）">
+                        <span class="glyphicon glyphicon-eye-open"></span> 修改显示
+                    </button>
+                    <button class="btn btn-default" id="extend_btn_auth_bug" style="width:95px;margin-left:30px;" data-toggle="tooltip" data-placement="bottom"
+                        title="此功能会将实际的授权时间延长一天，界面显示不变（给客户延长一天）">
+                        <span class="glyphicon glyphicon-user"></span> 延长授权
+                    </button>
+                    <div style="text-align: center; width: 500px; border:none;">
+                        <img src="./pic/loading.gif" id="loading_gif_auth_bug" class="loading_img" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--授权期限BUG的模态窗-->
+
+    <!--异常进出车数量修改的模态窗-->
+    <div class="modal fade" id="abnormal_inourt_num" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">异常进出车数量修改
+                        <font color="red" size="3">(警告：此功能仅用于南京医院定制项目)</font>
+                    </h4>
+                </div>
+                <div class="modal-body row">
+                    <div style="">
+                        <div class="col-md-6">
+                            <label>数据库 IP：</label>
+                            <input type="text" id="db_ip_njgl" style="width:150px;" value="192.168.55.248" placeholder="请输入数据库IP" />
+                        </div>
+                        <div class="col-md-6">
+                            <label>异常进出车数量：</label>
+                            <input type="text" id="abnormal_num_njgl" style="width:130px;" placeholder="请输入>=0的正整数" onKeyUp="this.value=this.value.replace(/[^\.\d]/g,'');this.value=this.value.replace('.','');"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-default" id="db_ok_btn_njgl" style="width:70px;margin-left:30px;">
+                        <span class="glyphicon glyphicon-ok"></span> 确认
+                    </button>
+                    <button class="btn btn-default" data-dismiss="modal" style="width:70px;margin-left:30px;">
+                        <span class="glyphicon glyphicon-remove"></span> 取消
+                    </button>
+                    <div style="text-align: center; width: 500px; border:none;">
+                        <img src="./pic/loading.gif" id="loading_gif_abnormal" class="loading_img" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--异常进出车数量修改的模态窗-->
+
+    <ul class="nav nav-pills" role="tablist" style="margin-top:15px">
+        <li role="presentation" class="active">
+            <a href="#system_status" role="tab" data-toggle="tab">系统监测</a>
+        </li>
+        <li role="presentation">
+            <a href="#data_maintain" role="tab" data-toggle="tab">数据维护</a>
+        </li>
+        <li role="presentation">
+            <a href="#health_check" role="tab" data-toggle="tab" style="display:none">ARM体检</a>
+        </li>
+        <li role="presentation">
+            <a href="#version_update" role="tab" data-toggle="tab" style="display:none">版本升级</a>
+        </li>
+        <li role="presentation">
+            <a href="#database_copy" role="tab" data-toggle="tab" style="display:none">数据库主备</a>
+        </li>
+        <li role="presentation">
+            <a href="#document_view" role="tab" data-toggle="tab" style="display:none">帮助文档</a>
+        </li>
+    </ul>
+
+    <HR SIZE=5>
+
+    <!-- 面板区 -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="system_status">
+            <a id="collapse_arm_params" data-toggle="collapse" data-target="#collapseArmParams">
+                <span id="hide_arm_params" class="glyphicon glyphicon-eye-close"></span>
+            </a>
+
+            <div id="collapseArmParams" class="collapse in">
+                <label>ARM IP：</label>
+                <input type="text" id="arm_address" style="width:200px;" value="192.168.55.248" placeholder="输入要监测的ARM IP" />
+                <label>端口号：</label>
+                <input type="text" id="arm_port" style="width:80px;" value="22" placeholder="端口号" />
+                <img src="./pic/loading.gif" id="loading_gif_status" class="loading_img" />
+                <button class="btn btn-default" id="get_sys_status" style="width:130px;margin-left:100px">
+                    <span class="glyphicon glyphicon-stats"></span> 获取系统状态
+                </button>
+                <button class="btn btn-default" id="disconnect_arm" style="width:100px;margin-left:50px;">
+                    <span class="glyphicon glyphicon-remove"></span> 断开连接
+                </button>
+            </div>
+
+            <HR SIZE=5>
+            <div class="cpu_css" id="cpu_status_chart"></div>
+            <div class="ram_css" id="ram_status_chart"></div>
+            <div class="rom_css" id="rom_status_chart"></div>
+            <div class="network_css" id="network_status_chart"></div>
+        </div>
+
+        <div role="tabpanel" class="tab-pane" id="data_maintain">
+
+            <div class="row" style="margin: 0 0 0 30px;">
+                <div class="col-md-3">
+                    <a data-toggle="modal" data-target="#export_inside_modal">
+                        <img src="./pic/export_xls.png" class="icon_style" />
+                        <div>场内记录导出工具</div>
+                    </a>
+                </div>
+                <div class="col-md-3" style="display:display">
+                    <a data-toggle="modal" data-target="#db_dumps_reset">
+                        <img src="./pic/db_dumps.jpg" class="icon_style" />
+                        <div>数据库备份与还原</div>
+                    </a>
+                </div>
+                <div class="col-md-3" style="display:display">
+                    <a data-toggle="modal" data-target="#auth_time_bug">
+                        <img src="./pic/auth_time.jpg" class="icon_style" />
+                        <div>授权期限BUG修正</div>
+                    </a>
+                </div>
+
+                <div class="col-md-3" style="display:display">
+                    <a data-toggle="modal" data-target="#abnormal_inourt_num">
+                        <img src="./pic/abnormal.jpg" class="icon_style" />
+                        <div>异常进出车数目修改(鼓楼医院定制)</div>
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div role="tabpanel" class="tab-pane" id="health_check">
+            <label>数据库IP：</label>
+            <input type="text" id="database_ip"></input>
+            <label style="margin-left:30px;">端口号：</label>
+            <input type="text" id="db_port" style="width:60px;"></input>
+            <button class="btn btn-default" type="submit" id="arm_search" style="width:80px;margin-left:260px">
+                <span class="glyphicon glyphicon-search"></span> 搜索
+            </button>
+
+            <HR SIZE=5>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ARM IP</th>
+                        <th>端口号</th>
+                        <th>用户名</th>
+                        <th>密码</th>
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tbody id="arm_info">
+                    <tr>
+                        <td>192.168.55.248</td>
+                        <td>22</td>
+                        <td>root</td>
+                        <td>*************</td>
+                        <td>XXXXXXXXX</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <textarea cols="130" rows="8" name="textarea" id="textarea"></textarea>
+
+        </div>
+
+
+        <div role="tabpanel" class="tab-pane" id="version_update">
+            version update
+        </div>
+        <div role="tabpanel" class="tab-pane" id="database_copy">
+            database copy
+        </div>
+        <div role="tabpanel" class="tab-pane" id="document_view">
+            document view
+        </div>
+    </div>
+
+</body>
+
+</html>

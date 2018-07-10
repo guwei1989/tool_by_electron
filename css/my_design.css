@@ -1,0 +1,55 @@
+.cpu_css{
+    height:240px;
+    width:450px; 
+    margin: 10px 10px 0px 10px; 
+    position:fixed;
+    float:left
+}
+
+.ram_css{
+    height:240px;
+    width:450px; 
+    margin: 10px 10px 0px 10px; 
+    position:fixed;
+    float:left
+}
+
+.rom_css{
+    height:240px;
+    width:450px; 
+    margin: 10px 10px 0px 10px; 
+    position:fixed;
+    float:left
+}
+
+.network_css{
+    height: 240px;
+    width: 450px; 
+    margin: 10px 10px 0px 10px; 
+    position: fixed;
+    float: left
+}
+
+.loading_img{
+    height: 30px;
+    width: 30px;
+    visibility: hidden;
+    margin: 0 0 0 50px
+}
+
+.icon_style{
+    height: 70px;
+    width: 70px;
+    margin: 0 0 10px 10px;
+}
+
+body
+{
+    background-color:#FFFFF0;
+    /* background-image: url('../pic/irain_logo.png'); */
+}
+
+/* img:hover
+{
+    opacity:1;
+} */
