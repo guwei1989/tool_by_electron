@@ -1,8 +1,8 @@
-const { app, BrowserWindow } = require('electron')
-const path = require('path')
-const url = require('url')
+const { app, BrowserWindow } = require('electron');
+const path = require('path');
+const url = require('url');
 
-let window = null
+let window = null;
 
 
 // Wait until the app is ready
@@ -19,17 +19,17 @@ app.once('ready', () => {
     backgroundColor: "#66CDAA",
     // Don't show the window until it's ready, this prevents any white flickering
     show: false
-  })
+  });
 
   window.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
     protocol: 'file:',
     slashes: true
-  }))
+  }));
 
   // window.webContents.openDevTools()
 
   window.once('ready-to-show', () => {
     window.show()
   })
-})
+});

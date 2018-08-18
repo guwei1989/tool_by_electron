@@ -24,10 +24,10 @@ $(document).ready(function () {
                                 title: "警告！",
                                 message: "数据库操作出现异常：" + error,
                                 size: 'small'
-                            })
+                            });
                             $("#loading_gif_abnormal").css("visibility", "hidden");
                             throw error;
-                        };
+                        }
                         console.log("update project_conf set value = " + "'" + $("#abnormal_num_njgl").val() + "'" +
                             " where name = abnormal_inout_display_num");
                         console.log('The solution is: ', rows);
@@ -58,5 +58,5 @@ $(document).ready(function () {
         }
 
     })
-})
+});
 

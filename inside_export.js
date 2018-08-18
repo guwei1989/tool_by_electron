@@ -16,7 +16,7 @@ $(document).ready(function () {
                     ]
                 ]
             }
-        ]
+        ];
         var end_time = $("#datetimepicker").val();
 
         if (isValidIp($("#db_ip").val())) {
